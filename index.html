@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HỆ THỐNG LẤY KEY TOOL</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; margin-top: 50px; background: #f4f4f9; color: #333; }
+        .box { background: white; padding: 30px; border-radius: 10px; display: inline-block; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 90%; width: 400px; }
+        .key { font-size: 26px; color: #ff4757; font-weight: bold; background: #ffeaa7; padding: 12px; border: 2px dashed #ff4757; margin: 20px 0; letter-spacing: 1px; word-break: break-all; cursor: pointer; }
+        .btn-copy { background: #2ed573; color: white; border: none; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.2s; }
+        .btn-copy:hover { background: #26af5f; }
+        code { background: #eee; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>🎉 VƯỢT LINK THÀNH CÔNG!</h2>
+        <p>Mã Key kích hoạt ngẫu nhiên của bạn là:</p>
+        
+        <!-- Ô hiển thị mã Key -->
+        <div class="key" id="key-display" onclick="copyKey()">ĐANG TẢI...</div>
+        
+        <button class="btn-copy" onclick="copyKey()">Sao Chép Mã Key</button>
+        <p>👉 Copy mã trên, quay lại Bot và gõ cú pháp: <br><br><code>/key MÃ_SỐ</code></p>
+    </div>
+
+    <script>
+        // DANH SÁCH CÁC MÃ KEY CỐ ĐỊNH CỦA BẠN
+        // Bạn có thể thêm, sửa, xóa các mã Key này tùy ý (Viết chữ IN HOA)
+        const danhSachKeys = [
+            "TOOLVIP99",
+            "KEYFREE2026",
+            "M4VIPPRO",
+            "ADMIN888",
+            "GIFTCODE1",
+            "VIPMEMBER2",
+            "FREEKEY999"
+        ];
+
+        let selectedKey = "";
+
+        // Hàm tự động chọn ngẫu nhiên 1 Key trong danh sách khi tải trang
+        function showRandomKey() {
+            const randomIndex = Math.floor(Math.random() * danhSachKeys.length);
+            selectedKey = danhSachKeys[randomIndex];
+            document.getElementById('key-display').innerText = selectedKey;
+        }
+
+        // Hàm hỗ trợ người dùng bấm vào tự sao chép nhanh
+        function copyKey() {
+            navigator.clipboard.writeText(selectedKey);
+            alert("🎯 Đã sao chép mã Key: " + selectedKey);
+        }
+
+        // Chạy hàm chọn Key ngay khi mở trang web
+        showRandomKey();
+    </script>
+</body>
+  </html>
+  
