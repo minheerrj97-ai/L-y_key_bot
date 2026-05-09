@@ -3,63 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HỆ THỐNG GIẢI MÃ KEY</title>
+    <title>Hệ Thống Giải Mã Key</title>
     <style>
-        body { font-family: sans-serif; text-align: center; margin-top: 50px; background: #f4f4f9; color: #333; }
-        .box { background: white; padding: 30px; border-radius: 10px; display: inline-block; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 90%; width: 400px; }
-        .key { font-size: 26px; color: #ff4757; font-weight: bold; background: #ffeaa7; padding: 12px; border: 2px dashed #ff4757; margin: 20px 0; letter-spacing: 1px; word-break: break-all; cursor: pointer; }
-        .btn-copy { background: #2ed573; color: white; border: none; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; }
-        code { background: #eee; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 16px; }
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #f4f4f9; }
+        .card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: inline-block; max-width: 400px; }
+        .key-box { font-size: 22px; font-weight: bold; color: #e74c3c; background: #fdf2f2; border: 2px dashed #e74c3c; padding: 10px; margin: 20px 0; border-radius: 5px; word-break: break-all; }
+        button { background: #3498db; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #2980b9; }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h2>🎉 VƯỢT LINK THÀNH CÔNG!</h2>
-        <p>Mã Key kích hoạt độc quyền cho tài khoản của bạn là:</p>
-        
-        <!-- Ô hiển thị mã Key dựa trên ID -->
-        <div class="key" id="key-display" onclick="copyKey()">ĐANG TẠI...</div>
-        
-        <button class="btn-copy" onclick="copyKey()">⚠️ Sao Chép Mã Key</button>
-        <p>👉 Hãy copy mã trên, quay lại Bot và gõ cú pháp: <br><br><code>/key MÃ_SỐ</code></p>
-    </div>
 
-    <script>
-        function getParam(name) {
-            return new URLSearchParams(window.location.search).get(name);
-        }
-        
-        let keyResult = "ID KHÔNG HỢP LỆ";
+<div class="card">
+    <h2>🎉 VƯỢT LINK THÀNH CÔNG!</h2>
+    <p>Mã Key kích hoạt độc quyền cho tài khoản của bạn là:</p>
+    <div class="key-box" id="keyDisplay">Đang tạo...</div>
+    <button onclick="copyKey()">⚠ Sao Chép Mã Key</button>
+    <p style="margin-top: 20px; font-size: 14px; color: #555;">
+        👉 Hãy copy mã trên, quay lại Bot và gõ cú pháp:<br>
+        <code style="background: #eee; padding: 2px 6px; border-radius: 3px; font-weight: bold;">/key MÃ_SỐ</code>
+    </p>
+</div>
 
-        function generateKeyFromUID() {
-            const uid = getParam('uid');
-            if (uid && !isNaN(uid)) {
-                let hash = 0;
-                // Chuỗi muối bí mật bảo mật cao (Bạn có thể đổi chữ này tùy ý, miễn là trùng với file Python)
-                const secret = uid.trim() + "M4_SECRET_SALT_2026";
-                
-                for (let i = 0; i < secret.length; i++) {
-                    hash = (hash << 5) - hash + secret.charCodeAt(i);
-                    hash |= 0; // Ép kiểu số nguyên 32-bit giống Python
-                }
-                
-                let unsignedHash = hash >>> 0; // Chuyển số không dấu giống >>> 0 của JS
-                keyResult = "M4_" + unsignedHash.toString(36).toUpperCase();
-                document.getElementById('key-display').innerText = keyResult;
-            } else {
-                document.getElementById('key-display').innerText = "THIẾU THÔNG TIN ĐỊNH DANH ID";
-            }
-        }
+<script>
+    // Hàm lấy tham số từ URL
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
 
-        function copyKey() {
-            if (keyResult !== "ID KHÔNG HỢP LỆ" && keyResult !== "THIẾU THÔNG TIN ĐỊNH DANH ID") {
-                navigator.clipboard.writeText(keyResult);
-                alert("🎯 Đã sao chép mã Key độc quyền: " + keyResult);
-            }
-        }
+    // Thuật toán mã hóa đơn giản để biến đổi User ID Telegram thành một chuỗi Key bảo mật
+    function generateSecureKey(uid) {
+        if (!uid) return "KHONG_TIM_THAY_ID";
+        // Mã hóa cơ bản bằng Base64 chuỗi định dạng để tránh user tự đoán key
+        const salt = "M4_SECRET_2026";
+        return btoa(uid + "_" + salt).replace(/=/g, "").toUpperCase();
+    }
 
-        // Chạy thuật toán ngay khi trang web được tải xong
-        generateKeyFromUID();
-    </script>
+    const uid = getQueryParam('uid');
+    const generatedKey = generateSecureKey(uid);
+    document.getElementById('keyDisplay').innerText = generatedKey;
+
+    function copyKey() {
+        navigator.clipboard.writeText(generatedKey);
+        alert("✅ Đã sao chép mã Key thành công!");
+    }
+</script>
 </body>
 </html>
