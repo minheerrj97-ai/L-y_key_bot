@@ -3,59 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HỆ THỐNG LẤY KEY TOOL</title>
+    <title>HỆ THỐNG GIẢI MÃ KEY</title>
     <style>
         body { font-family: sans-serif; text-align: center; margin-top: 50px; background: #f4f4f9; color: #333; }
         .box { background: white; padding: 30px; border-radius: 10px; display: inline-block; box-shadow: 0 0 10px rgba(0,0,0,0.1); max-width: 90%; width: 400px; }
         .key { font-size: 26px; color: #ff4757; font-weight: bold; background: #ffeaa7; padding: 12px; border: 2px dashed #ff4757; margin: 20px 0; letter-spacing: 1px; word-break: break-all; cursor: pointer; }
-        .btn-copy { background: #2ed573; color: white; border: none; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.2s; }
-        .btn-copy:hover { background: #26af5f; }
+        .btn-copy { background: #2ed573; color: white; border: none; padding: 10px 20px; font-size: 16px; font-weight: bold; border-radius: 5px; cursor: pointer; }
         code { background: #eee; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 16px; }
     </style>
 </head>
 <body>
     <div class="box">
         <h2>🎉 VƯỢT LINK THÀNH CÔNG!</h2>
-        <p>Mã Key kích hoạt ngẫu nhiên của bạn là:</p>
+        <p>Mã Key kích hoạt độc quyền cho tài khoản của bạn là:</p>
         
-        <!-- Ô hiển thị mã Key -->
-        <div class="key" id="key-display" onclick="copyKey()">ĐANG TẢI...</div>
+        <!-- Ô hiển thị mã Key dựa trên ID -->
+        <div class="key" id="key-display" onclick="copyKey()">ĐANG TẠI...</div>
         
-        <button class="btn-copy" onclick="copyKey()">Sao Chép Mã Key</button>
-        <p>👉 Copy mã trên, quay lại Bot và gõ cú pháp: <br><br><code>/key MÃ_SỐ</code></p>
+        <button class="btn-copy" onclick="copyKey()">⚠️ Sao Chép Mã Key</button>
+        <p>👉 Hãy copy mã trên, quay lại Bot và gõ cú pháp: <br><br><code>/key MÃ_SỐ</code></p>
     </div>
 
     <script>
-        // DANH SÁCH CÁC MÃ KEY CỐ ĐỊNH CỦA BẠN
-        // Bạn có thể thêm, sửa, xóa các mã Key này tùy ý (Viết chữ IN HOA)
-        const danhSachKeys = [
-            "TOOLVIP99",
-            "KEYFREE2026",
-            "M4VIPPRO",
-            "ADMIN888",
-            "GIFTCODE1",
-            "VIPMEMBER2",
-            "FREEKEY999"
-        ];
+        function getParam(name) {
+            return new URLSearchParams(window.location.search).get(name);
+        }
+        
+        let keyResult = "ID KHÔNG HỢP LỆ";
 
-        let selectedKey = "";
-
-        // Hàm tự động chọn ngẫu nhiên 1 Key trong danh sách khi tải trang
-        function showRandomKey() {
-            const randomIndex = Math.floor(Math.random() * danhSachKeys.length);
-            selectedKey = danhSachKeys[randomIndex];
-            document.getElementById('key-display').innerText = selectedKey;
+        function generateKeyFromUID() {
+            const uid = getParam('uid');
+            if (uid && !isNaN(uid)) {
+                let hash = 0;
+                // Chuỗi muối bí mật bảo mật cao (Bạn có thể đổi chữ này tùy ý, miễn là trùng với file Python)
+                const secret = uid.trim() + "M4_SECRET_SALT_2026";
+                
+                for (let i = 0; i < secret.length; i++) {
+                    hash = (hash << 5) - hash + secret.charCodeAt(i);
+                    hash |= 0; // Ép kiểu số nguyên 32-bit giống Python
+                }
+                
+                let unsignedHash = hash >>> 0; // Chuyển số không dấu giống >>> 0 của JS
+                keyResult = "M4_" + unsignedHash.toString(36).toUpperCase();
+                document.getElementById('key-display').innerText = keyResult;
+            } else {
+                document.getElementById('key-display').innerText = "THIẾU THÔNG TIN ĐỊNH DANH ID";
+            }
         }
 
-        // Hàm hỗ trợ người dùng bấm vào tự sao chép nhanh
         function copyKey() {
-            navigator.clipboard.writeText(selectedKey);
-            alert("🎯 Đã sao chép mã Key: " + selectedKey);
+            if (keyResult !== "ID KHÔNG HỢP LỆ" && keyResult !== "THIẾU THÔNG TIN ĐỊNH DANH ID") {
+                navigator.clipboard.writeText(keyResult);
+                alert("🎯 Đã sao chép mã Key độc quyền: " + keyResult);
+            }
         }
 
-        // Chạy hàm chọn Key ngay khi mở trang web
-        showRandomKey();
+        // Chạy thuật toán ngay khi trang web được tải xong
+        generateKeyFromUID();
     </script>
 </body>
-  </html>
-  
+</html>
